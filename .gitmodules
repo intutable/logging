@@ -1,0 +1,4 @@
+[submodule "shared-config"]
+	path = shared-config
+    url = git@gitlab.com:intutable/shared-config.git
+    branch = fix/symlinks-are-absolute-paths
