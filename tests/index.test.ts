@@ -1,5 +1,5 @@
 import path from "path";
-import {Core, CoreNotification} from '../../core/'
+import {Core, CoreNotification} from "@intutable/core"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
 
@@ -10,7 +10,7 @@ const notification: CoreNotification = {
 let core: Core
 
 beforeAll(async () => {
-    core = await Core.create([PLUGIN_PATH]);
+    core = await Core.create([PLUGIN_PATH])
 
     // dummy handler to avoid undefinded-notification-handler exception
     core.events.listenForNotifications(notification.channel, notification.method, 
@@ -21,14 +21,19 @@ afterAll(async () => {
     await core.plugins.closeAll()
 })
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 describe("test logging", () => {
     
     test("log console", async () => {
-        console.log = jest.fn()
+        const consoleSpy = jest.spyOn(console, 'log')
 
         await core.events.notify(notification)
-
-        expect(console.log).toHaveBeenCalled()
+        
+        expect(consoleSpy).toHaveBeenCalled()
+        const loggedMessage = consoleSpy.mock.calls[0][0]
+        const loggedJSON = JSON.parse(loggedMessage)
+        expect(loggedJSON.notification).toEqual(notification)
     })
 
 })

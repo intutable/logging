@@ -1,7 +1,8 @@
-import { CoreNotification, CoreRequest, CoreResponse, PluginLoader } from "../../core";
+import { CoreNotification, CoreRequest, CoreResponse, PluginLoader } from "@intutable/core"
 
 export async function init(plugin: PluginLoader) {
-    plugin.listenForAllNotifications(receiveNotification)
+    plugin.listenForNotifications("channel").on("method", receiveNotification)
+    //plugin.listenForAllNotifications(receiveNotification)
 }
 
 async function receiveNotification(notification: CoreNotification) {
@@ -9,13 +10,9 @@ async function receiveNotification(notification: CoreNotification) {
     logConsole(logString)
 }
 
-function createLogString({ channel, method, ...parameters }: CoreNotification): String {
-    let logString: String = new Date().toISOString()
-    logString += `\tchannel: "${channel}", method: "${method}",`
-    for (const key in parameters) {
-        logString += ` ${key}: "${parameters[key]}",`
-    }
-    return logString.slice(0, -1) // remove last comma
+function createLogString(notification: CoreNotification): String {
+    let date:String = new Date().toISOString()
+    return JSON.stringify({date,notification})
 }
 
 function logConsole(logString: String) {
