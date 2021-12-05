@@ -33,6 +33,7 @@ describe("test logging", () => {
         expect(consoleSpy).toHaveBeenCalled()
         const loggedMessage = consoleSpy.mock.calls[0][0]
         const loggedJSON = JSON.parse(loggedMessage)
+        expect(Date.parse(loggedJSON.date)).not.toBeNaN()
         expect(loggedJSON.notification).toEqual(notification)
     })
 
