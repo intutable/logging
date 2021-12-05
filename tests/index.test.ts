@@ -1,4 +1,4 @@
-import path from "path";
+import path from "path"
 import {Core, CoreNotification} from "@intutable/core"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
@@ -20,8 +20,6 @@ beforeAll(async () => {
 afterAll(async () => {
     await core.plugins.closeAll()
 })
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe("test logging", () => {
     
