@@ -1,12 +1,18 @@
+import { appendFileSync } from "fs"
 import { CoreNotification, PluginLoader } from "@intutable/core"
 
+const LOGFILE_PATH = "log/intutable.log"
+
 export async function init(plugin: PluginLoader) {
-    plugin.listenForAllNotifications(receiveNotification)
+    plugin.listenForNotifications("channel1").on("method1", receiveNotification)
+    plugin.listenForNotifications("channel2").on("method2", receiveNotification)
+    //plugin.listenForAllNotifications(receiveNotification)
 }
 
 async function receiveNotification(notification: CoreNotification) {
     const logString: String = createLogString(notification);
     logConsole(logString)
+    logFile(logString)
 }
 
 function createLogString(notification: CoreNotification): String {
@@ -16,4 +22,8 @@ function createLogString(notification: CoreNotification): String {
 
 function logConsole(logString: String) {
     console.log(logString)
+}
+
+function logFile(logString: String) {
+    appendFileSync(LOGFILE_PATH, logString + '\n')
 }
