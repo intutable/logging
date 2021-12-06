@@ -4,9 +4,7 @@ import { CoreNotification, PluginLoader } from "@intutable/core"
 const LOGFILE_PATH = "log/intutable.log"
 
 export async function init(plugin: PluginLoader) {
-    plugin.listenForNotifications("channel1").on("method1", receiveNotification)
-    plugin.listenForNotifications("channel2").on("method2", receiveNotification)
-    //plugin.listenForAllNotifications(receiveNotification)
+    plugin.listenForAllNotifications(receiveNotification)
 }
 
 async function receiveNotification(notification: CoreNotification) {
