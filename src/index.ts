@@ -1,8 +1,7 @@
-import { CoreNotification, CoreRequest, CoreResponse, PluginLoader } from "@intutable/core"
+import { CoreNotification, PluginLoader } from "@intutable/core"
 
 export async function init(plugin: PluginLoader) {
-    plugin.listenForNotifications("channel").on("method", receiveNotification)
-    //plugin.listenForAllNotifications(receiveNotification)
+    plugin.listenForAllNotifications(receiveNotification)
 }
 
 async function receiveNotification(notification: CoreNotification) {
