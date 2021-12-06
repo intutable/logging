@@ -1,5 +1,6 @@
 import path from "path"
 import {Core, CoreNotification} from "@intutable/core"
+import {getEventsLog} from "../src/requests"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
 
@@ -47,6 +48,15 @@ describe("test logging", () => {
         const loggedMessage2 = consoleSpy.mock.calls[1][0]
         loggedMassageValid(loggedMessage1, notification1)
         loggedMassageValid(loggedMessage2, notification2)
+    })
+
+    test("getEventsLog endpoint", async () => {
+        await core.events.notify(notification1)
+        await core.events.notify(notification2)
+        
+        const coreResponse: any = await core.events.request(getEventsLog(2));
+        const events: CoreNotification[] = coreResponse.events
+        expect(events).toEqual([notification1, notification2])
     })
 
 })
