@@ -74,4 +74,13 @@ describe("getEventsLog endpoint", () => {
         expect(events).toEqual([notification1, notification2, notification1])
     })
 
+    test("too many notification-events requested", async () => {
+        await core.events.notify(notification1)
+        
+        const coreResponse: any = await core.events.request(getEventsLog(500));
+        const events: CoreNotification[] = coreResponse.events
+        expect(events.length).toBeLessThan(500)
+        expect(events[events.length - 1]).toEqual(notification1)
+    })
+
 })
