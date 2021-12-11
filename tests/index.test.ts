@@ -46,9 +46,9 @@ function loggedMassageValid(massage: string, notification: CoreNotification) {
     expect(loggedJSON.notification).toEqual(notification)
 }
 
-describe("test logging", () => {
+describe("log console", () => {
     
-    test("log console", async () => {
+    test("notifications logged on console", async () => {
         const consoleSpy = jest.spyOn(console, 'log')
 
         await core.events.notify(notification1)
@@ -62,7 +62,11 @@ describe("test logging", () => {
         loggedMassageValid(loggedMessage2, notification2)
     })
 
-    test("log file", async () => {
+})
+
+describe("log file", () => {
+
+    test("notifications logged in file", async () => {
         await core.events.notify(notification1)
         await core.events.notify(notification2)
 
