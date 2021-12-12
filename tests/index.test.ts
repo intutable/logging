@@ -1,7 +1,10 @@
 import path from "path"
+import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs"
 import {Core, CoreNotification} from "@intutable/core"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
+
+const LOGFILE_PATH = "log/intutable.log"
 
 const notification1: CoreNotification = { 
     channel: "channel1", method: "method1", param: "this is param"
@@ -13,8 +16,20 @@ const notification2: CoreNotification = {
 
 let core: Core
 
+let logFileBeforeTesting: string | undefined
+
 beforeAll(async () => {
     core = await Core.create([PLUGIN_PATH])
+
+    if (!existsSync(path.dirname(LOGFILE_PATH))) {
+        mkdirSync(path.dirname(LOGFILE_PATH))
+    }
+
+    if (existsSync(LOGFILE_PATH)) {
+        logFileBeforeTesting = readFileSync(LOGFILE_PATH).toString()
+    } else {
+        logFileBeforeTesting = undefined
+    }
 
     // dummy handler to avoid undefinded-notification-handler exception
     core.events.listenForNotifications(notification1.channel, notification1.method, 
@@ -25,6 +40,12 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await core.plugins.closeAll()
+
+    if (logFileBeforeTesting != undefined) {
+        writeFileSync(LOGFILE_PATH, logFileBeforeTesting)
+    } else {
+        unlinkSync(LOGFILE_PATH)
+    }
 })
 
 function loggedMassageValid(massage: string, notification: CoreNotification) {
@@ -33,9 +54,9 @@ function loggedMassageValid(massage: string, notification: CoreNotification) {
     expect(loggedJSON.notification).toEqual(notification)
 }
 
-describe("test logging", () => {
+describe("log console", () => {
     
-    test("log console", async () => {
+    test("notifications logged on console", async () => {
         const consoleSpy = jest.spyOn(console, 'log')
 
         await core.events.notify(notification1)
@@ -47,6 +68,31 @@ describe("test logging", () => {
         const loggedMessage2 = consoleSpy.mock.calls[1][0]
         loggedMassageValid(loggedMessage1, notification1)
         loggedMassageValid(loggedMessage2, notification2)
+    })
+
+})
+
+describe("log file", () => {
+
+    test("notifications logged in file", async () => {
+        await core.events.notify(notification1)
+        await core.events.notify(notification2)
+
+        expect(existsSync(LOGFILE_PATH)).toBeTruthy()
+
+        const lines: string[] = 
+            readFileSync(LOGFILE_PATH)
+            .toString()
+            .split('\n')
+            .filter(line => line != '')
+        expect(lines.length).toBeGreaterThanOrEqual(2)
+
+        const loggedMessage1: string = lines[lines.length - 2]
+        const loggedMessage2: string = lines[lines.length - 1]
+
+        loggedMassageValid(loggedMessage1, notification1)
+        loggedMassageValid(loggedMessage2, notification2)
+        
     })
 
 })
