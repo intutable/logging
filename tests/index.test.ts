@@ -1,5 +1,5 @@
 import path from "path"
-import { readFileSync, writeFileSync, existsSync } from "fs"
+import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs"
 import {Core, CoreNotification} from "@intutable/core"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
@@ -16,15 +16,19 @@ const notification2: CoreNotification = {
 
 let core: Core
 
-let logFileBeforeTesting: string
+let logFileBeforeTesting: string | undefined
 
 beforeAll(async () => {
     core = await Core.create([PLUGIN_PATH])
 
+    if (!existsSync(path.dirname(LOGFILE_PATH))) {
+        mkdirSync(path.dirname(LOGFILE_PATH))
+    }
+
     if (existsSync(LOGFILE_PATH)) {
         logFileBeforeTesting = readFileSync(LOGFILE_PATH).toString()
     } else {
-        logFileBeforeTesting = ""
+        logFileBeforeTesting = undefined
     }
 
     // dummy handler to avoid undefinded-notification-handler exception
@@ -37,7 +41,11 @@ beforeAll(async () => {
 afterAll(async () => {
     await core.plugins.closeAll()
 
-    writeFileSync(LOGFILE_PATH, logFileBeforeTesting)
+    if (logFileBeforeTesting != undefined) {
+        writeFileSync(LOGFILE_PATH, logFileBeforeTesting)
+    } else {
+        unlinkSync(LOGFILE_PATH)
+    }
 })
 
 function loggedMassageValid(massage: string, notification: CoreNotification) {
