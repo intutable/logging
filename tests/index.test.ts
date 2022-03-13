@@ -1,6 +1,7 @@
 import path from "path"
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from "fs"
 import {Core, CoreNotification} from "@intutable/core"
+import {getEventsLog} from "../src/requests"
 
 const PLUGIN_PATH = path.join(__dirname, "../")
 
@@ -70,6 +71,38 @@ describe("log console", () => {
         loggedMassageValid(loggedMessage2, notification2)
     })
 
+})
+
+describe("getEventsLog endpoint", () => {
+
+    test("single notification-event requested", async () => {
+        await core.events.notify(notification1)
+        await core.events.notify(notification2)
+        await core.events.notify(notification1)
+        
+        const coreResponse: any = await core.events.request(getEventsLog(1));
+        const events: CoreNotification[] = coreResponse.events
+        expect(events).toEqual([notification1])
+    })
+
+    test("multiple notification-events requested", async () => {
+        await core.events.notify(notification1)
+        await core.events.notify(notification2)
+        await core.events.notify(notification1)
+        
+        const coreResponse: any = await core.events.request(getEventsLog(3));
+        const events: CoreNotification[] = coreResponse.events
+        expect(events).toEqual([notification1, notification2, notification1])
+    })
+
+    test("more notification-events requested than exist", async () => {
+        await core.events.notify(notification1)
+        
+        const coreResponse: any = await core.events.request(getEventsLog(500));
+        const events: CoreNotification[] = coreResponse.events
+        expect(events.length).toBeLessThan(500)
+        expect(events[events.length - 1]).toEqual(notification1)
+    })
 })
 
 describe("log file", () => {
