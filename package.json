@@ -20,6 +20,6 @@
         "typescript": "^4.4.3"
     },
     "dependencies": {
-        "@intutable/core": "^0.1.4"
+        "@intutable/core": "^0.1.6"
     }
 }
