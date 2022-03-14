@@ -10,9 +10,10 @@
  * To learn about the xTable plugin interface, have a look at https://intutable.gitlab.io/documentation/
  * @module
  */
-import { appendFileSync } from "fs"
+import { appendFileSync, existsSync, mkdirSync } from "fs"
 import { CoreNotification, CoreRequest, CoreResponse, PluginLoader } from "@intutable/core"
 import { RingBuffer } from 'ring-buffer-ts'
+import path from "path"
 
 const MAX_LOG_HISTORY = 1024
 let logHistory: RingBuffer<CoreNotification>
@@ -58,6 +59,9 @@ function logConsole(logString: String) {
 }
 
 function logFile(logString: String) {
+    if(!existsSync(path.dirname(LOGFILE_PATH))) {
+        mkdirSync(path.dirname(LOGFILE_PATH))
+    }
     try {
         appendFileSync(LOGFILE_PATH, logString + '\n')
     } catch (err) {
