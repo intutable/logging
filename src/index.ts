@@ -1,3 +1,15 @@
+/**
+ * This module is the core of the plugin.
+ * It contains almost all logic of this plugin.
+ * 
+ * Every loggable event should be broadcast as a notification. The plugin automatically catches and logs the events.
+ * 
+ * This plugin exposes the following endpoints:
+ *  * getEventsLog(n): returns an array of the last n logged events.
+ * 
+ * To learn about the xTable plugin interface, have a look at https://intutable.gitlab.io/documentation/
+ * @module
+ */
 import { appendFileSync } from "fs"
 import { CoreNotification, CoreRequest, CoreResponse, PluginLoader } from "@intutable/core"
 import { RingBuffer } from 'ring-buffer-ts'
