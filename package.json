@@ -1,17 +1,27 @@
 {
     "name": "@intutable/logging",
-    "version": "0.1.1",
+    "version": "1.0.0",
     "description": "",
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
-        "test": "npm run build && npx jest"
+        "test": "jest tests",
+        "test:coverage": "jest --coverage tests"
     },
     "keywords": [],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/intutable/logging.git"
+    },
+    "files": [
+        "package.json",
+        "LICENSE",
+        "dist/*"
+    ],
     "author": "Parallel and Distributed Systems Group Universität Heidelberg",
     "license": "Apache-2.0",
     "publishConfig": {
-        "@intutable:registry": "https://gitlab.com/api/v4/projects/29926955/packages/npm/"
+        "registry": "https://npm.pkg.github.com/"
     },
     "devDependencies": {
         "@types/jest": "^27.0.2",
@@ -21,7 +31,7 @@
         "typescript": "^4.4.3"
     },
     "dependencies": {
-        "@intutable/core": "^0.1.6",
+        "@intutable/core": "^1.0.0",
         "ring-buffer-ts": "^1.0.3"
     }
 }

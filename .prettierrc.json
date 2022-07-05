@@ -1,1 +1,6 @@
-shared-config/.prettierrc.json
+{
+    "arrowParens": "avoid",
+    "semi": false,
+    "printWidth": 100,
+    "tabWidth": 4
+}

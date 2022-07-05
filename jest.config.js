@@ -1,1 +1,6 @@
-shared-config/jest.config.js
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+    preset: "ts-jest",
+    testEnvironment: "node",
+    collectCoverageFrom: ["src/**", "!**/node_modules/**"],
+}
